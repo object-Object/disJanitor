@@ -1,0 +1,13 @@
+deps
+lit
+luvit
+luvi
+lit.exe
+luvit.exe
+luvi.exe
+*.bak
+*.log
+discordia.json
+gateway.json
+*.so
+options.lua
