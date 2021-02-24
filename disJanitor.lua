@@ -61,7 +61,7 @@ end
 
 client:on("ready", function()
 	if #client.guilds>1 then
-		print("ERROR: This bot is designed to be used in one guild at a time.")
+		print("ERROR: This bot is designed to be used in one guild at a time. Shutting down now.")
 		client:stop()
 		return
 	end
@@ -70,7 +70,8 @@ end)
 
 client:on("guildCreate", function(guild)
 	if #client.guilds>1 then
-		print("ERROR: This bot is designed to be used in one guild at a time.")
+		client.owner:send("ERROR: This bot is designed to be used in one guild at a time. Shutting down now.")
+		print("ERROR: This bot is designed to be used in one guild at a time. Shutting down now.")
 		client:stop()
 		return
 	end
