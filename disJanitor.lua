@@ -19,6 +19,7 @@ do
 		managed = json.decode(raw)
 	end
 end
+local tempdisable = {}
 
 local colors = {
 	good = discordia.Color.fromHex("0080ff").value,
@@ -85,7 +86,10 @@ client:on("messageCreate", function(message)
 
 		local botMember = message.guild:getMember(client.user)
 
-		if managed[message.channel.id] then
+		if tempdisable[message.channel.id.."-"..message.author.id] then
+			tempdisable[message.channel.id.."-"..message.author.id] = nil
+			return
+		elseif managed[message.channel.id] then
 			if not botMember:hasPermission(message.channel, "manageMessages") then
 				managed[message.channel.id] = nil
 				fs.writeFileSync(managedFilename, json.encode(managed))
@@ -120,10 +124,11 @@ client:on("messageCreate", function(message)
 					title = "Help menu",
 					color = colors.good,
 					fields = {
-						{name = "addchannel", value = "Adds a channel to the list of managed channels. Messages sent in these channels will be automatically deleted after "..options.deleteTime/1000 .." second(s).\nUsage: `"..options.prefix.."addchannel <#channel>`"},
+						{name = "addchannel", value = "Adds a channel to the list of managed channels. Messages sent in these channels will be automatically deleted after "..options.deleteTime/1000 .." second(s). Also, my commands will not work in these channels (other bots' commands still will, though).\nUsage: `"..options.prefix.."addchannel <#channel>`"},
 						{name = "delchannel", value = "Removes a channel from the list of managed channels.\nUsage: `"..options.prefix.."delchannel <#channel>`"},
 						{name = "help", value = "Displays this help menu.\nUsage: `"..options.prefix.."help`"},
 						{name = "listchannels", value = "Displays the list of managed channels.\nUsage: `"..options.prefix.."listchannels`"},
+						{name = "tempdisable", value = "Disables automatic message deletion in the specified channel for one message by the command user. That is, the next message sent by the command user in the specified channel will not be auto-deleted. My commands will still not work in that message.\nUsage: `"..options.prefix.."tempdisable <#channel>`"},
 					}
 				}
 			}
@@ -193,6 +198,30 @@ client:on("messageCreate", function(message)
 			message:reply{embed={
 				title = "Managed channels",
 				description = channels~="" and channels or "There are currently no managed channels.",
+				color = colors.good
+			}}
+
+		elseif command == "tempdisable" and checkPermissions(message) then
+			local channel = message.mentionedChannels.first
+			if not channel then
+				message:reply{embed={
+					title = "Incorrect usage",
+					description = "Command usage: `"..options.prefix.."tempdisable <#channel>`",
+					color = colors.bad
+				}}
+				return
+			elseif not managed[channel.id] then
+				message:reply{embed={
+					title = "Invalid argument",
+					description = channel.mentionString.." is not on the list of managed channels, so this command cannot be used on it.",
+					color = colors.bad
+				}}
+				return
+			end
+			tempdisable[channel.id.."-"..message.author.id] = true
+			message:reply{embed={
+				title = "Channel temporarily disabled",
+				description = "Your next message in "..channel.mentionString.." will not be automatically deleted.",
 				color = colors.good
 			}}
 
