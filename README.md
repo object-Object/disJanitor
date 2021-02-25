@@ -5,6 +5,17 @@ Small Discord bot to auto-delete messages sent in specified channels in a single
 
 This bot **has not been designed for multi-server use**, and by default will shut itself down if it is in more than one server. The main issues are the lack of per-server configuration for prefix, delete time, and staff roles / command permissions. The reason for this is simply that I designed this bot for a specific task in one server, so it would have been a waste of effort to implement multi-server support when I don't need it to do that.
 
+## Required permissions
+
+This bot requires the following permissions:
+* In any managed channels:
+  * Read Messages
+  * Send Messages
+  * Manage Messages
+* In one other channel (for configuration):
+  * Read Messages
+  * Send Messages
+
 ## Installation
 
 1. Install [Luvit](https://luvit.io) and [Discordia](https://github.com/SinisterRectus/Discordia).
