@@ -2,12 +2,9 @@ deps
 lit
 luvit
 luvi
-lit.exe
-luvit.exe
-luvi.exe
+*.exe
 *.bak
 *.log
-discordia.json
-gateway.json
+*.json
 *.so
 options.lua
